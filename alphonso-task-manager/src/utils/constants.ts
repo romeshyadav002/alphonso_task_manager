@@ -5,8 +5,8 @@ export const buttonState = [
 ];
 
 export const tasks = [
-  'Brush Teeth🪥',
-  'Buy Grocery🍅',
-  'Pay rent🏠',
-  'Clean Room🧹',
+  'Brush Teeth 🪥',
+  'Buy Grocery 🍅',
+  'Pay rent 🏠',
+  'Clean Room 🧹',
 ];
