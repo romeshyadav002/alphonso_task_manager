@@ -9,31 +9,33 @@ interface TaskCompProps {
   isChecked: boolean;
   onPress: () => void;
   onClose?: () => void;
+  isSearched: boolean;
 }
 const TaskComp: FC<TaskCompProps> = ({
   title,
   onPress,
   isChecked,
   onClose,
+  isSearched,
 }) => {
   return (
-    <div className="flex w-full p-3 border-2 rounded-lg justify-between">
+    <div
+      className="flex w-full p-2 border-2 rounded-lg justify-between items-center"
+      style={{ backgroundColor: isSearched ? 'Highlight' : undefined }}
+    >
       <div className="flex flex-row gap-3 justify-center items-center">
         <CheckboxView
           title={title || ''}
           labelClassName="w-[100%] overflow-hidden text-ellipsis text-left capitalize"
           containerClassName="justify-start"
           customStyle={{
-            backgroundColor: 'white',
             width: '95%',
-            paddingTop: 5,
-            paddingBottom: 5,
           }}
           onPress={onPress}
           checked={isChecked}
         />
       </div>
-      <RxCrossCircled onClick={onClose} />
+      <RxCrossCircled onClick={onClose} className="w-5 h-5" />
     </div>
   );
 };

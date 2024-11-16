@@ -18,6 +18,11 @@ export default function Home() {
     setCurrListState,
     taskName,
     setTaskName,
+    searchTask,
+    setSearchTask,
+    filteredTasks,
+    setFilteredTasks,
+    handleSearch,
   } = useLists();
 
   return (
@@ -27,9 +32,14 @@ export default function Home() {
         <div className="flex flex-col md:flex-row gap-2">
           <Input
             type="text"
-            placeholder="🔍   Search"
+            placeholder="🔍Search tasks..."
             className="flex w-full"
+            value={searchTask}
+            onChange={(e) => {
+              setSearchTask(e.target.value);
+            }}
           />
+
           <div className="flex gap-2">
             {buttonState.map((val) => {
               return (
@@ -38,7 +48,11 @@ export default function Home() {
                     variant={
                       currListState === val.state ? 'destructive' : 'outline'
                     }
-                    onClick={() => setCurrListState(val.state)}
+                    onClick={() => {
+                      setCurrListState(val.state);
+                      setSearchTask('');
+                      setFilteredTasks(getCurrStateList());
+                    }}
                   >
                     {val.state}
                   </Button>
@@ -50,7 +64,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {getCurrStateList().map((val) => {
+        {filteredTasks.map((val) => {
           return (
             <TaskComp
               title={val}
@@ -58,9 +72,13 @@ export default function Home() {
               isChecked={getIsChecked(val)}
               onPress={() => handleSwitch(val)}
               onClose={() => handleDeleteTask(val)}
+              isSearched={val.toLowerCase() === searchTask.toLowerCase()}
             />
           );
         })}
+        {filteredTasks.length === 0 && (
+          <li className="text-gray-500">No tasks found.</li>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">

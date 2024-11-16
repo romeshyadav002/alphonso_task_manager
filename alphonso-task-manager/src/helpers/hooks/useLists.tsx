@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppContext } from '../contexts/TaskContext';
 
 export const useLists = () => {
@@ -58,6 +58,27 @@ export const useLists = () => {
     return renderList;
   };
 
+  const [searchTask, setSearchTask] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState(getCurrStateList());
+
+  const handleSearch = useCallback(
+    debounce(() => {
+      const currList = getCurrStateList();
+      console.log({ currList });
+      const filtered = currList.filter((task) =>
+        task.toLowerCase().includes(searchTask.toLowerCase()),
+      );
+      console.log({ filtered });
+      setFilteredTasks(filtered);
+    }, 300),
+    [currListState, allTasks, searchTask],
+  );
+
+  useEffect(() => {
+    console.log('i am here', { currListState });
+    handleSearch();
+  }, [searchTask, currListState, allTasks]);
+
   return {
     getCurrStateList,
     handleAddTask,
@@ -68,5 +89,18 @@ export const useLists = () => {
     setCurrListState,
     taskName,
     setTaskName,
+    searchTask,
+    setSearchTask,
+    filteredTasks,
+    setFilteredTasks,
+    handleSearch,
+  };
+};
+
+const debounce = (func: Function, delay: number) => {
+  let timer: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
   };
 };
