@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import TaskContext from '../helpers/TaskContext';
+import { AppProvider } from '../helpers/contexts/TaskContext';
 import { tasks } from '../utils/constants';
 
 const geistSans = localFont({
@@ -26,11 +26,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TaskContext.Provider
-          value={{ All: tasks, Completed: [], Incomplete: [] }}
-        >
-          {children}
-        </TaskContext.Provider>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );
