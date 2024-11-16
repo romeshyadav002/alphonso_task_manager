@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { buttonState } from '../../utils/constants';
 import { Button } from '../../components/ui/button';
 import TaskComp from '../../components/TaskComp/TaskComp';
-import React from 'react';
+import React, { useState } from 'react';
 import { useLists } from '../../helpers/hooks/useLists';
+import { AlertDialogView } from '../../components/AlertDialog/AlertDialog';
 
 export default function Home() {
   const {
@@ -23,6 +24,8 @@ export default function Home() {
     filteredTasks,
     setFilteredTasks,
     handleSearch,
+    isTaskAlreadyExist,
+    setIsTaskAlreadyExist,
   } = useLists();
 
   return (
@@ -92,6 +95,11 @@ export default function Home() {
           Add Task
         </Button>
       </div>
+
+      <AlertDialogView
+        isVisible={isTaskAlreadyExist}
+        onClose={() => setIsTaskAlreadyExist(false)}
+      />
     </div>
   );
 }

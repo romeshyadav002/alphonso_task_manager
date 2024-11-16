@@ -4,6 +4,7 @@ import { useAppContext } from '../contexts/TaskContext';
 export const useLists = () => {
   const [currListState, setCurrListState] = useState('All');
   const [taskName, setTaskName] = useState('');
+  const [isTaskAlreadyExist, setIsTaskAlreadyExist] = useState(false);
 
   const {
     allTasks,
@@ -38,11 +39,13 @@ export const useLists = () => {
   const handleAddTask = () => {
     if (!allTasks.includes(taskName)) {
       updateAllTasks([...allTasks, taskName]);
-    }
-    if (currListState === 'Completed') {
-      updateCompletedTasks([...completedTasks, taskName]);
+      if (currListState === 'Completed') {
+        updateCompletedTasks([...completedTasks, taskName]);
+      } else {
+        updateIncompleteTasks([...incompleteTasks, taskName]);
+      }
     } else {
-      updateIncompleteTasks([...incompleteTasks, taskName]);
+      setIsTaskAlreadyExist(true);
     }
     setTaskName('');
   };
@@ -94,6 +97,8 @@ export const useLists = () => {
     filteredTasks,
     setFilteredTasks,
     handleSearch,
+    isTaskAlreadyExist,
+    setIsTaskAlreadyExist,
   };
 };
 
