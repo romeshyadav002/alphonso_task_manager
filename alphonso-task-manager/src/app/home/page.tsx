@@ -1,37 +1,24 @@
 'use client';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
-import { buttonState, tasks } from '../../utils/constants';
+import { buttonState } from '../../utils/constants';
 import { Button } from '../../components/ui/button';
 import TaskComp from '../../components/TaskComp/TaskComp';
-import React, { useState } from 'react';
-import { useAppContext } from '../../helpers/contexts/TaskContext';
+import React from 'react';
+import { useLists } from '../../helpers/hooks/useLists';
 
 export default function Home() {
-  const [state, setState] = useState('All');
-  const [taskName, setTaskName] = useState('');
   const {
-    allTasks,
-    completedTasks,
-    incompleteTasks,
-    updateAllTasks,
-    updateCompletedTasks,
-    updateIncompleteTasks,
-  } = useAppContext();
-
-  const renderList =
-    state === 'All'
-      ? allTasks
-      : state === 'Completed'
-      ? completedTasks
-      : incompleteTasks;
-
-  const handleAddTask = () => {
-    if (!allTasks.includes(taskName)) {
-      updateAllTasks([...allTasks, taskName]);
-    }
-    setTaskName('');
-  };
+    getCurrStateList,
+    handleAddTask,
+    handleSwitch,
+    handleDeleteTask,
+    getIsChecked,
+    currListState,
+    setCurrListState,
+    taskName,
+    setTaskName,
+  } = useLists();
 
   return (
     <div className="flex flex-col justify-center p-10 gap-4 w-full">
@@ -48,8 +35,10 @@ export default function Home() {
               return (
                 <div key={val.state}>
                   <Button
-                    variant={state === val.state ? 'destructive' : 'outline'}
-                    onClick={() => setState(val.state)}
+                    variant={
+                      currListState === val.state ? 'destructive' : 'outline'
+                    }
+                    onClick={() => setCurrListState(val.state)}
                   >
                     {val.state}
                   </Button>
@@ -61,34 +50,14 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {renderList.map((val) => {
+        {getCurrStateList().map((val) => {
           return (
             <TaskComp
               title={val}
               key={val}
-              isChecked={completedTasks.includes(val)}
-              onPress={() => {
-                if (completedTasks.includes(val)) {
-                  updateCompletedTasks([
-                    ...completedTasks.filter((curr) => curr !== val),
-                  ]);
-                  updateIncompleteTasks([...incompleteTasks, val]);
-                } else {
-                  updateCompletedTasks([...completedTasks, val]);
-                  updateIncompleteTasks([
-                    ...incompleteTasks.filter((curr) => curr !== val),
-                  ]);
-                }
-              }}
-              onClose={() => {
-                updateAllTasks([...allTasks.filter((curr) => curr !== val)]);
-                updateCompletedTasks([
-                  ...completedTasks.filter((curr) => curr !== val),
-                ]);
-                updateIncompleteTasks([
-                  ...incompleteTasks.filter((curr) => curr !== val),
-                ]);
-              }}
+              isChecked={getIsChecked(val)}
+              onPress={() => handleSwitch(val)}
+              onClose={() => handleDeleteTask(val)}
             />
           );
         })}
